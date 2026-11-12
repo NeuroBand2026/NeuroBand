@@ -1,0 +1,1146 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>NeuroBand | Plataforma de monitoreo</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+[hidden] {
+  display: none !important;
+}
+
+/* DISTRIBUCIÓN GENERAL */
+
+.nb-full-width {
+  grid-column: 1 / -1;
+}
+
+.nb-main-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.nb-main-layout > .panel {
+  min-width: 0;
+}
+
+/* BOTONES */
+
+.nb-btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 13px 18px;
+  background: #f3353a;
+  color: white;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.nb-btn.secondary {
+  background: #ecece8;
+  color: #252b35;
+}
+
+.nb-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 18px 0;
+}
+
+/* FORMULARIOS */
+
+.nb-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.nb-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  color: #5f6875;
+}
+
+.nb-form input,
+.nb-form select,
+.nb-form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dadde2;
+  border-radius: 9px;
+  background: white;
+  color: #202732;
+  font: inherit;
+}
+
+.nb-form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.nb-note {
+  color: #76808b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.nb-message {
+  font-size: 13px;
+  color: #56606c;
+}
+
+/* CONEXIÓN */
+
+.neuroband-connection {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.neuroband-connect-btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 13px 18px;
+  background: #f3353a;
+  color: white;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.neuroband-connect-btn:disabled {
+  background: #626872;
+  cursor: default;
+}
+
+/* GRÁFICA PPG */
+
+.ppg-monitor {
+  position: relative;
+  height: 310px;
+  overflow: hidden;
+  border: 1px solid #f3e7e7;
+  border-radius: 12px;
+  background: #fffafa;
+}
+
+.ppg-monitor svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ppg-trace {
+  fill: none;
+  stroke: #f3353a;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.ppg-monitor-label {
+  position: absolute;
+  top: 13px;
+  left: 16px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #d83a42;
+}
+
+.ppg-monitor-time {
+  position: absolute;
+  right: 16px;
+  bottom: 12px;
+  font-size: 11px;
+  color: #9a8585;
+}
+
+.ppg-details {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #eee;
+}
+
+.ppg-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ppg-detail-label {
+  color: #9097a3;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.ppg-detail-value {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ppg-live-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: #aab2bd;
+}
+
+.ppg-live-dot.active,
+.neuroband-dot-active {
+  background: #19b66a !important;
+  box-shadow: 0 0 0 4px #19b66a1c;
+}
+
+/* HISTORIALES */
+
+.nb-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.nb-record {
+  border: 1px solid #e9e8e4;
+  border-radius: 10px;
+  padding: 13px;
+}
+
+.nb-record-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.nb-record button {
+  border: 0;
+  background: transparent;
+  color: #bf343a;
+  cursor: pointer;
+  font: inherit;
+}
+
+/* INFORMACIÓN MÉDICA */
+
+.nb-medical {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.nb-medical details {
+  border: 1px solid #e9e8e4;
+  border-radius: 9px;
+  padding: 12px;
+}
+
+.nb-medical summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.nb-medical p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* UBICACIÓN */
+
+.nb-map {
+  display: block;
+  width: 100%;
+  height: 240px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 12px;
+}
+
+.nb-location-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.nb-location-links a {
+  color: #cf3039;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+/* EMERGENCIAS */
+
+.nb-emergency-demo {
+  margin-top: 12px;
+}
+
+.nb-emergency-message {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #bf343a;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 800px) {
+  .nb-main-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .ppg-monitor {
+    height: 220px;
+  }
+}
+
+@media (max-width: 600px) {
+  .ppg-monitor {
+    height: 185px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar">
+
+  <div class="brand">
+    <img
+      src="logo-neuroband-transparente.png"
+      alt="Logo NeuroBand"
+      class="brand-logo"
+    >
+  </div>
+
+  <div class="school-info">
+    <span>PROYECTO EXPOTEC 2026</span>
+    <strong>CTP Don Bosco</strong>
+    <small>Colegio Técnico Profesional Don Bosco</small>
+  </div>
+
+  <div class="menu-label">PLATAFORMA</div>
+
+  <nav class="navigation">
+    <a href="#inicio" class="nav-link active">
+      Panel general
+    </a>
+
+    <a href="#pulso" class="nav-link">
+      Monitoreo cardíaco
+    </a>
+
+    <a href="#perfil" class="nav-link">
+      Mi perfil
+    </a>
+
+    <a href="#historial-cardiaco" class="nav-link">
+      Historial cardíaco
+    </a>
+
+    <a href="#historial" class="nav-link">
+      Historial de episodios
+    </a>
+
+    <a href="#educacion" class="nav-link">
+      Información médica
+    </a>
+
+    <a href="#emergencias" class="nav-link">
+      Emergencias
+    </a>
+
+    <a href="#ubicacion" class="nav-link">
+      Mi ubicación
+    </a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <span class="status-dot"></span>
+    Prototipo de investigación
+    <small>Expotec 2026 · CTP Don Bosco</small>
+  </div>
+
+</aside>
+
+<main class="main-content">
+
+<header class="topbar">
+
+  <div class="breadcrumb">
+    NeuroBand / Panel general
+  </div>
+
+  <div class="topbar-right">
+    <span class="prototype-label">
+      ENTORNO DEMOSTRATIVO
+    </span>
+
+    <div class="avatar">NB</div>
+  </div>
+
+</header>
+
+<div class="content">
+
+<section id="inicio" class="welcome">
+
+  <div>
+    <div class="eyebrow">PANEL DE CONTROL</div>
+
+    <h1>Resumen de monitoreo</h1>
+
+    <p>
+      Información centralizada para el seguimiento
+      y la asistencia.
+    </p>
+  </div>
+
+  <div class="date-chip">
+    Expotec 2026
+  </div>
+
+</section>
+
+<!-- CONEXIÓN ESP32 -->
+
+<section class="neuroband-connection">
+
+  <button
+    id="conectar-esp32"
+    class="neuroband-connect-btn"
+    type="button"
+  >
+    Conectar NeuroBand
+  </button>
+
+  <span id="estado-conexion" role="status">
+    Dispositivo desconectado
+  </span>
+
+</section>
+
+<!-- INDICADORES PRINCIPALES -->
+
+<section class="metrics">
+
+  <article class="metric-card">
+
+    <div class="metric-heading">
+      <span>Frecuencia cardíaca</span>
+      <span class="metric-symbol">♥</span>
+    </div>
+
+    <div class="metric-value">
+      <span id="bpm-valor">--</span>
+      <small>BPM</small>
+    </div>
+
+    <div class="metric-footer">
+      <span id="bpm-indicador" class="dot muted"></span>
+      <span id="bpm-estado">
+        Sensor no conectado
+      </span>
+    </div>
+
+  </article>
+
+  <article class="metric-card">
+
+    <div class="metric-heading">
+      <span>Episodios registrados</span>
+      <span class="metric-symbol">◎</span>
+    </div>
+
+    <div class="metric-value">
+      <span id="total-eventos">0</span>
+      <small>eventos</small>
+    </div>
+
+    <div
+      class="metric-footer"
+      id="eventos-subtitulo"
+    >
+      Sin registros disponibles
+    </div>
+
+  </article>
+
+  <article class="metric-card">
+
+    <div class="metric-heading">
+      <span>Estado del dispositivo</span>
+      <span class="metric-symbol">⌁</span>
+    </div>
+
+    <div
+      class="device-state"
+      id="estado-dispositivo"
+    >
+      Desconectado
+    </div>
+
+    <div class="metric-footer">
+      <span
+        id="dispositivo-indicador"
+        class="dot muted"
+      ></span>
+
+      <span id="dispositivo-detalle">
+        Esperando conexión con ESP32
+      </span>
+    </div>
+
+  </article>
+
+</section>
+
+<!-- NUEVA DISTRIBUCIÓN -->
+
+<section class="nb-main-layout">
+
+<!-- ACTIVIDAD CARDÍACA: ANCHO COMPLETO -->
+
+<article
+  class="panel chart-panel nb-full-width"
+  id="pulso"
+>
+
+  <div class="panel-header">
+    <div>
+      <h2>Actividad cardíaca</h2>
+      <p>
+        Señal fotopletismográfica (PPG)
+        en tiempo real
+      </p>
+    </div>
+
+    <span
+      class="outline-tag"
+      id="pulso-etiqueta"
+    >
+      SIN DATOS
+    </span>
+  </div>
+
+  <div class="ppg-monitor">
+
+    <div class="ppg-monitor-label">
+      PPG / INFRARROJO
+    </div>
+
+    <svg
+      viewBox="0 0 600 180"
+      preserveAspectRatio="none"
+      role="img"
+      aria-label="Señal óptica PPG del MAX30102"
+    >
+
+      <defs>
+        <pattern
+          id="ppg-small"
+          width="15"
+          height="15"
+          patternUnits="userSpaceOnUse"
+        >
+          <path
+            d="M15 0 L0 0 0 15"
+            fill="none"
+            stroke="#e8dada"
+            stroke-width=".5"
+          />
+        </pattern>
+
+        <pattern
+          id="ppg-large"
+          width="75"
+          height="75"
+          patternUnits="userSpaceOnUse"
+        >
+          <rect
+            width="75"
+            height="75"
+            fill="url(#ppg-small)"
+          />
+
+          <path
+            d="M75 0 L0 0 0 75"
+            fill="none"
+            stroke="#e1cece"
+            stroke-width=".8"
+          />
+        </pattern>
+      </defs>
+
+      <rect
+        width="600"
+        height="180"
+        fill="url(#ppg-large)"
+      />
+
+      <path
+        id="linea-bpm"
+        class="ppg-trace"
+        d=""
+      />
+
+    </svg>
+
+    <div class="ppg-monitor-time">
+      TIEMPO →
+    </div>
+
+  </div>
+
+  <div class="ppg-details">
+
+    <div class="ppg-detail">
+      <span class="ppg-detail-label">
+        Adquisición
+      </span>
+
+      <span
+        id="ppg-adquisicion"
+        class="ppg-detail-value"
+      >
+        Esperando sensor
+      </span>
+    </div>
+
+    <div class="ppg-detail">
+      <span class="ppg-detail-label">
+        Señal óptica
+      </span>
+
+      <span class="ppg-detail-value">
+        <span
+          id="ppg-punto"
+          class="ppg-live-dot"
+        ></span>
+
+        <span id="ppg-calidad">
+          Sin señal
+        </span>
+      </span>
+    </div>
+
+    <div class="ppg-detail">
+      <span class="ppg-detail-label">
+        Ventana temporal
+      </span>
+
+      <span class="ppg-detail-value">
+        Aproximadamente 6 s
+      </span>
+    </div>
+
+    <div class="ppg-detail">
+      <span class="ppg-detail-label">
+        Sensor
+      </span>
+
+      <span class="ppg-detail-value">
+        MAX30102
+      </span>
+    </div>
+
+  </div>
+
+  <p class="chart-note" id="pulso-nota">
+    Esperando muestras ópticas reales del sensor.
+  </p>
+
+</article>
+
+<!-- PERFIL DEL USUARIO -->
+
+<article class="panel" id="perfil">
+
+  <div class="panel-header">
+    <div>
+      <h2>Perfil del usuario</h2>
+      <p>
+        Información personal guardada
+        en este navegador
+      </p>
+    </div>
+  </div>
+
+  <div class="profile-placeholder">
+
+    <div class="profile-avatar">
+      NB
+    </div>
+
+    <h3 id="perfil-nombre-vista">
+      Usuario sin configurar
+    </h3>
+
+    <p id="perfil-edad-vista">
+      Registra los datos personales
+      para comenzar.
+    </p>
+
+  </div>
+
+  <div
+    id="perfil-guardado"
+    hidden
+    style="text-align:center;margin-top:18px"
+  >
+
+    <button
+      id="editar-perfil"
+      type="button"
+      class="nb-btn secondary"
+    >
+      Editar perfil
+    </button>
+
+    <p class="nb-note">
+      Perfil guardado correctamente.
+    </p>
+
+  </div>
+
+  <form id="perfil-form" class="nb-form">
+
+    <label>
+      Nombre completo
+
+      <input
+        id="perfil-nombre"
+        maxlength="100"
+        required
+        autocomplete="name"
+        placeholder="Nombre y apellidos"
+      >
+    </label>
+
+    <label>
+      Edad
+
+      <input
+        id="perfil-edad"
+        type="number"
+        min="1"
+        max="120"
+        required
+        placeholder="Edad en años"
+      >
+    </label>
+
+    <button type="submit" class="nb-btn">
+      Guardar perfil
+    </button>
+
+    <span
+      id="perfil-mensaje"
+      class="nb-message"
+      role="status"
+    ></span>
+
+  </form>
+
+</article>
+
+<!-- HISTORIAL CARDÍACO -->
+
+<article class="panel" id="historial-cardiaco">
+
+  <div class="panel-header">
+    <div>
+      <h2>Historial cardíaco</h2>
+      <p>
+        Mediciones guardadas del usuario seleccionado
+      </p>
+    </div>
+  </div>
+
+  <p
+    id="mediciones-usuario"
+    class="nb-note"
+  >
+    Seleccioná un perfil para consultar mediciones.
+  </p>
+
+  <p
+    id="mediciones-estado"
+    class="nb-note"
+  >
+    Esperando mediciones reales.
+  </p>
+
+  <div
+    id="mediciones-lista"
+    class="nb-list"
+  ></div>
+
+  <p class="nb-note">
+    Registro experimental. No constituye
+    un diagnóstico médico ni identifica
+    automáticamente crisis epilépticas.
+  </p>
+
+</article>
+
+<!-- HISTORIAL DE EPISODIOS -->
+
+<article class="panel" id="historial">
+
+  <div class="panel-header">
+    <div>
+      <h2>Historial de episodios</h2>
+      <p>
+        Registro manual de eventos reportados
+      </p>
+    </div>
+  </div>
+
+  <p class="nb-note">
+    Los registros son manuales.
+    No representan detecciones automáticas de crisis.
+  </p>
+
+  <form id="episodio-form" class="nb-form">
+
+    <label>
+      Fecha y hora
+
+      <input
+        id="episodio-fecha"
+        type="datetime-local"
+        required
+      >
+    </label>
+
+    <label>
+      Tipo de evento
+
+      <select id="episodio-tipo" required>
+        <option value="">
+          Seleccionar evento
+        </option>
+
+        <option value="Crisis reportada">
+          Crisis reportada
+        </option>
+
+        <option value="Síntoma observado">
+          Síntoma observado
+        </option>
+
+        <option value="Otro evento">
+          Otro evento
+        </option>
+      </select>
+    </label>
+
+    <label>
+      Observaciones
+
+      <textarea
+        id="episodio-notas"
+        maxlength="500"
+        placeholder="Descripción opcional"
+      ></textarea>
+    </label>
+
+    <button type="submit" class="nb-btn">
+      Registrar evento
+    </button>
+
+    <span
+      id="episodio-mensaje"
+      class="nb-message"
+      role="status"
+    ></span>
+
+  </form>
+
+  <div
+    id="episodio-lista"
+    class="nb-list"
+    aria-live="polite"
+  ></div>
+
+</article>
+
+<!-- INFORMACIÓN MÉDICA -->
+
+<article class="panel" id="educacion">
+
+  <div class="panel-header">
+    <div>
+      <h2>Información médica</h2>
+      <p>
+        Educación y primeros auxilios
+      </p>
+    </div>
+  </div>
+
+  <div class="info-block">
+
+    <span class="info-index">
+      01 / CONOCIMIENTO
+    </span>
+
+    <h3>Comprender la epilepsia</h3>
+
+    <p>
+      La epilepsia es una condición neurológica
+      caracterizada por una predisposición
+      a presentar crisis epilépticas.
+    </p>
+
+  </div>
+
+  <div class="nb-medical">
+
+    <details>
+      <summary>
+        ¿Qué hacer durante una crisis convulsiva?
+      </summary>
+
+      <p>
+        Mantené la calma, retirá objetos peligrosos,
+        protegé la cabeza y medí la duración.
+        Cuando sea seguro, colocá a la persona de lado.
+        Permanecé con ella hasta que se recupere.
+      </p>
+    </details>
+
+    <details>
+      <summary>
+        ¿Qué NO hacer?
+      </summary>
+
+      <p>
+        No sujetés a la persona a la fuerza,
+        no introduzcás objetos en su boca
+        y no le des alimentos ni agua durante la crisis.
+      </p>
+    </details>
+
+    <details>
+      <summary>
+        ¿Cuándo llamar al 911?
+      </summary>
+
+      <p>
+        Si la crisis dura 5 minutos o más,
+        se repite sin recuperación,
+        hay dificultad respiratoria,
+        lesiones, ocurre en el agua,
+        es la primera crisis conocida
+        o existe otro riesgo.
+      </p>
+    </details>
+
+  </div>
+
+  <p class="nb-note">
+    Información educativa.
+    No sustituye atención médica.
+  </p>
+
+</article>
+
+<!-- ASISTENCIA DE EMERGENCIA -->
+
+<article
+  class="panel emergency-panel"
+  id="emergencias"
+>
+
+  <div class="panel-header">
+    <div>
+      <h2>Asistencia de emergencia</h2>
+      <p>
+        Simulación de asistencia en Costa Rica
+      </p>
+    </div>
+  </div>
+
+  <div class="emergency-number">
+    911
+  </div>
+
+  <p>
+    Número nacional de emergencias.
+  </p>
+
+  <button
+    id="simular-emergencia"
+    type="button"
+    class="nb-btn nb-emergency-demo"
+  >
+    Simular llamada al 911
+  </button>
+
+  <p
+    id="mensaje-emergencia"
+    class="nb-emergency-message"
+    role="status"
+    hidden
+  ></p>
+
+  <p class="nb-note">
+    Función demostrativa.
+    No realiza llamadas reales.
+    En una emergencia verdadera,
+    llamá directamente al 911.
+  </p>
+
+</article>
+
+<!-- UBICACIÓN Y CENTROS MÉDICOS -->
+
+<article class="panel" id="ubicacion">
+
+  <div class="panel-header">
+    <div>
+      <h2>Ubicación y centros médicos</h2>
+      <p>
+        Ubicación del navegador con permiso
+      </p>
+    </div>
+  </div>
+
+  <div class="location-placeholder">
+
+    <div class="location-marker"></div>
+
+    <strong id="ubicacion-estado">
+      Ubicación no disponible
+    </strong>
+
+    <p id="ubicacion-detalle">
+      La ubicación se solicitará
+      con permiso del usuario.
+    </p>
+
+  </div>
+
+  <div class="nb-actions">
+
+    <button
+      id="ubicacion-obtener"
+      type="button"
+      class="nb-btn"
+    >
+      Obtener mi ubicación
+    </button>
+
+    <button
+      id="ubicacion-limpiar"
+      type="button"
+      class="nb-btn secondary"
+    >
+      Ocultar ubicación
+    </button>
+
+  </div>
+
+  <div id="ubicacion-resultado" hidden>
+
+    <iframe
+      id="ubicacion-mapa"
+      class="nb-map"
+      title="Mapa de ubicación"
+      loading="lazy"
+      referrerpolicy="no-referrer"
+    ></iframe>
+
+    <div class="nb-location-links">
+
+      <a
+        id="ubicacion-google"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Abrir en Google Maps
+      </a>
+
+      <a
+        id="ubicacion-hospitales"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Buscar hospitales cercanos
+      </a>
+
+    </div>
+
+  </div>
+
+  <p class="nb-note">
+    La ubicación corresponde al navegador,
+    no al ESP32. Los mapas externos
+    pueden recibir las coordenadas.
+  </p>
+
+</article>
+
+</section>
+
+<footer class="footer">
+
+  <span>
+    © 2026 NeuroBand · CTP Don Bosco · Expotec
+  </span>
+
+  <span>
+    Prototipo educativo ·
+    No es un dispositivo médico certificado
+  </span>
+
+</footer>
+
+</div>
+</main>
+</div>
+
+<script src="app.js"></script>
+<script src="mediciones.js"></script>
+<script src="respaldo.js"></script>
+
+<script>
+document.getElementById("simular-emergencia")
+  .addEventListener("click", () => {
+    const mensaje =
+      document.getElementById("mensaje-emergencia");
+
+    mensaje.hidden = false;
+    mensaje.textContent =
+      "SIMULACIÓN: Se activaría el protocolo de asistencia. No se ha realizado ninguna llamada.";
+  });
+</script>
+
+</body>
+</html>
